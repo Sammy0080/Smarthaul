@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Smart Haul">
+    <title>Smart Haul - Welcome Dashboard</title>
+
+    <!-- AUTOMATIC HOME SCREEN LOGO EMBEDDED DIRECTLY FOR SAFARI -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' rx='45' fill='%23ffffff'/><path d='M100 20 L150 45 V95 C150 135 100 170 100 170 C100 170 50 135 50 95 V45 Z' fill='none' stroke='%23800020' stroke-width='10'/><path d='M100 30 L140 52 V92 C140 126 100 156 100 156 C100 156 60 126 60 92 V52 Z' fill='none' stroke='%23d97706' stroke-width='6'/><rect x='75' y='100' width='10' height='25' fill='%23d97706'/><rect x='92' y='85' width='10' height='40' fill='%23d97706'/><rect x='109' y='70' width='10' height='55' fill='%23d97706'/><path d='M115 110 L145 110 L145 120 L135 120 L135 125 L115 125 Z' fill='%23800020'/><circle cx='122' cy='126' r='4' fill='%23333'/><circle cx='140' cy='126' r='4' fill='%23333'/></svg>">
+
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --header-dark: #0f172a;
+            --brand-maroon: #800020;
+            --brand-orange: #d97706;
+            --bg-gray: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background-color: var(--bg-gray); 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            color: var(--text-dark);
+            padding-bottom: 80px;
+        }
+
+        /* Top Header Navigation */
+        .app-header {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header-title { font-size: 18px; font-weight: 700; }
+        .icon-btn { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+
+        .container { padding: 16px; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+        /* Shield Hero Card */
+        .hero-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .shield-svg { width: 110px; height: 110px; margin: 0 auto 10px; display: block; }
+        .brand-name { font-size: 24px; font-weight: 900; color: var(--brand-maroon); letter-spacing: 1px; }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: var(--primary-blue);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            cursor: pointer;
+        }
+        .metric-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .metric-value { font-size: 26px; font-weight: 800; color: var(--text-dark); margin: 6px 0 2px; }
+        .metric-sub { font-size: 12px; color: var(--brand-maroon); font-weight: 600; }
+
+        /* Sparkline Indicator */
+        .sparkline { width: 100%; height: 24px; stroke: var(--primary-blue); stroke-width: 2; fill: none; margin-top: 4px; }
+
+        /* Bottom Tab Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .nav-item.active { color: var(--primary-blue); }
+        .nav-icon { font-size: 18px; margin-bottom: 2px; }
+
+        /* Modal Overlay */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 200;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-card {
+            background: #ffffff; padding: 20px; border-radius: 16px; width: 100%; max-width: 360px; text-align: center;
+        }
+        .modal-btn {
+            background: var(--primary-blue); color: white; border: none; padding: 12px; border-radius: 8px;
+            width: 100%; font-weight: 700; margin-top: 16px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <button class="icon-btn" onclick="showModal('System Menu', 'Navigating TMS modules...')">&#9776;</button>
+        <span class="header-title">Welcome Dashboard</span>
+        <button class="icon-btn" onclick="showModal('Notifications', 'No new alerts.')">&#128276;</button>
+    </header>
+
+    <div class="container">
+        <!-- Shield Hero Card -->
+        <div class="hero-card">
+            <svg class="shield-svg" viewBox="0 0 200 200">
+                <path d="M100 10 L160 40 V100 C160 145 100 185 100 185 C100 185 40 145 40 100 V40 Z" fill="none" stroke="#800020" stroke-width="12"/>
+                <path d="M100 22 L148 47 V96 C148 134 100 168 100 168 C100 168 52 134 52 96 V47 Z" fill="none" stroke="#d97706" stroke-width="7"/>
+                <!-- Bar Chart Inside Shield -->
+                <rect x="72" y="105" width="12" height="30" fill="#d97706"/>
+                <rect x="92" y="85" width="12" height="50" fill="#d97706"/>
+                <rect x="112" y="65" width="12" height="70" fill="#d97706"/>
+                <!-- Semi Truck Graphic -->
+                <path d="M120 120 L155 120 L155 132 L143 132 L143 138 L120 138 Z" fill="#800020"/>
+                <circle cx="128" cy="140" r="5" fill="#333"/>
+                <circle cx="148" cy="140" r="5" fill="#333"/>
+            </svg>
+            <div class="brand-name">SMART HAUL</div>
+        </div>
+
+        <!-- Welcome Greeting -->
+        <div class="welcome-banner">
+            Welcome, Admin!
+        </div>
+
+        <!-- Operational Metrics Grid -->
+        <div class="metrics-grid">
+            <div class="metric-card" onclick="showModal('Active Loads', '12 loads currently assigned and in transit.')">
+                <div class="metric-title">Active Loads</div>
+                <div class="metric-value">12</div>
+                <svg class="sparkline" viewBox="0 0 100 20"><path d="M0 15 Q25 5, 50 12 T100 5"/></svg>
+            </div>
+
+            <div class="metric-card" onclick="showModal('Fuel Spend', 'Total fuel expenditure for current billing cycle: $1,150.00')">
+                <div class="metric-title">Fuel Spend</div>
+                <div class="metric-value">$1,150</div>
+                <svg class="sparkline" viewBox="0 0 100 20"><path d="M0 10 Q25 18, 50 8 T100 12"/></svg>
+            </div>
+
+            <div class="metric-card" onclick="showModal('Maintenance Alerts', '2 vehicles due for scheduled oil and brake inspection.')">
+                <div class="metric-title">Maintenance Alerts</div>
+                <div class="metric-sub">2 due soon</div>
+                <svg class="sparkline" viewBox="0 0 100 20" style="stroke: #d97706;"><path d="M0 5 Q25 15, 50 5 T100 15"/></svg>
+            </div>
+
+            <div class="metric-card" onclick="showModal('IFTA Tracking', 'Quarter 3 IFTA mileage report generated successfully.')">
+                <div class="metric-title">IFTA (Q3) Tracking</div>
+                <div class="metric-value" style="font-size: 20px; margin-top: 10px;">IFTA</div>
+                <svg class="sparkline" viewBox="0 0 100 20"><path d="M0 12 Q25 4, 50 14 T100 8"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">&#8962;</span> Home
+        </a>
+        <a href="#" class="nav-item" onclick="showModal('Drivers', 'Viewing 8 active drivers.')">
+            <span class="nav-icon">&#128100;</span> Drivers
+        </a>
+        <a href="#" class="nav-item" onclick="showModal('Loads', '12 active, 4 pending loads.')">
+            <span class="nav-icon">&#128666;</span> Loads
+        </a>
+        <a href="#" class="nav-item" onclick="showModal('Settings', 'App preferences & user access.')">
+            <span class="nav-icon">&#9881;</span> Settings
+        </a>
+    </nav>
+
+    <!-- Modal Popup Component -->
+    <div id="appModal" class="modal">
+        <div class="modal-card">
+            <h3 id="mTitle" style="margin-bottom: 8px; color: var(--header-dark);">Title</h3>
+            <p id="mBody" style="font-size: 14px; color: var(--text-muted);">Content</p>
+            <button class="modal-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function showModal(title, body) {
+            document.getElementById('mTitle').innerText = title;
+            document.getElementById('mBody').innerText = body;
+            document.getElementById('appModal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('appModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
